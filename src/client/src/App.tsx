@@ -1,10 +1,26 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import api from './api/axios';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(undefined)
+
+  const fetchCount = async () => {
+    const res = await api.get('/count');
+    const { count } = res.data;
+    setCount(count);
+  }
+
+  const addCount = async () => {
+    await api.post('/add-count');
+    await fetchCount();
+  }
+
+  useEffect(() => {
+    fetchCount();
+  }, [])
 
   return (
     <>
@@ -18,7 +34,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={addCount}>
           count is {count}
         </button>
         <p>
